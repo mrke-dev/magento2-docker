@@ -1,0 +1,56 @@
+version: '3.9'
+
+services:
+# Apache service
+  apache:
+    build:
+      context: .
+      dockerfile: ./apache/Dockerfile
+    ports:
+      - '80:80'
+    volumes:
+      - ./app:/var/www/html
+      - ~/.composer/cache:/var/www/.composer/cache
+      - ~/.npm:/var/www/.npm
+    environment:
+      PHP_IDE_CONFIG: "serverName=docker"
+    links:
+      - database
+
+  # Mysql service
+  database:
+    image: mysql:5.7
+    ports:
+      - '3300:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: magento2
+      MYSQL_USER: mrke
+      MYSQL_PASSWORD: mrke
+    volumes:
+      - databaseData:/var/lib/mysql
+      - ./backups:/var/tmp/backups
+
+  # Elasticsearch service
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: ./elasticsearch/Dockerfile
+    ports:
+      - '9200:9200'
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - node.name=node-1
+      - cluster.initial_master_nodes=node-1
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./elasticsearchdata:/usr/share/elasticsearch/data
+
+  # Volumes
+volumes:
+    databaseData: {}
