@@ -1,4 +1,4 @@
-FROM elasticsearch
+FROM elasticsearch:7.6.0
 
 LABEL Ernest KOUASSI="ernestkouassi02@gmail.com"
 
