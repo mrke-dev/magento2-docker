@@ -65,7 +65,7 @@ RUN apt-get update \
 
 
 # Install nodeJS, npm
-CMD wget -O- -q https://deb.nodesource.com/setup_14.x | sudo -E bash - \
+CMD wget -O- -q https://deb.nodesource.com/setup_14.x | -E bash - \
   	&& apt-get install -y nodejs build-essential \
     && npm i -g grunt-cli
 
@@ -80,10 +80,10 @@ COPY /.docker/* /var/www/
 RUN chmod +x /usr/local/bin/*
 RUN ln -s /etc/apache2/sites-available/magento.conf /etc/apache2/sites-enabled/magento.conf
 
-# RUN curl -o /etc/bash_completion.d/m2install-bash-completion https://raw.githubusercontent.com/yvoronoy/m2install/master/m2install-bash-completion
-# RUN curl -O /etc/bash_completion.d/n98-magerun2.phar.bash https://raw.githubusercontent.com/netz98/n98-magerun2/master/res/autocompletion/bash/n98-magerun2.phar.bash
-# RUN echo "source /etc/bash_completion" >> root/.bashrc
-# RUN echo "source /etc/bash_completion" >> /var/www/.bashrc
+RUN curl -o /etc/bash_completion.d/m2install-bash-completion https://raw.githubusercontent.com/yvoronoy/m2install/master/m2install-bash-completion
+RUN curl -o /etc/bash_completion.d/n98-magerun2.phar.bash https://raw.githubusercontent.com/netz98/n98-magerun2/master/res/autocompletion/bash/n98-magerun2.phar.bash
+RUN echo "source /etc/bash_completion" >> root/.bashrc
+RUN echo "source /etc/bash_completion" >> /var/www/.bashrc
 
 RUN chmod 777 -Rf /var/www/ /var/www/.* \
 	&& chown -Rf www-data:www-data /var/www /var/www/.* \
